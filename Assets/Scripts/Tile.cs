@@ -4,34 +4,60 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    [SerializeField] private List<Color> states;
+    [SerializeField] private List<Sprite> states;
     [SerializeField] private int initialState = 0;
     [SerializeField] private float timeBetweenStates = 1.0f;
     
+    private TileManager tileManager;
+    
     private SpriteRenderer spriteRenderer;
     private int currentState = 0;
-    private float triggerEnterTime = 0.0f;
+    private float changeStateTime = 0.0f;
 
     private void Awake()
     {
+        tileManager = GameObject.Find("TileManager").GetComponent<TileManager>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         UpdateState(initialState);
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        triggerEnterTime = Time.time;
     }
     
     private void OnTriggerStay2D(Collider2D collision)
     {
-        print("Colliding with " + collision.name);
-
-        if (Time.time - triggerEnterTime > timeBetweenStates)
+        int newState = currentState;
+        
+        if (collision.gameObject.CompareTag("Player"))
         {
-            triggerEnterTime = Time.time;
-            UpdateState(currentState + 1);
+            if (currentState == states.Count - 1)
+            {
+                // At max
+                return;
+            }
+
+            newState++;
         }
+        else if (collision.gameObject.CompareTag("Enemy"))
+        {
+            if (currentState == 0)
+            {
+                // At min
+                return;
+            }
+
+            newState--;
+        }
+        
+        float distanceFactor = 1.0f;
+        distanceFactor = Vector3.Distance(transform.position, collision.transform.position);
+        distanceFactor = Mathf.Clamp(distanceFactor, 0.1f, 10.0f);
+        distanceFactor /= 10.0f;
+
+        if (Time.time - changeStateTime < timeBetweenStates * distanceFactor)
+        {
+            return;
+        }
+
+        changeStateTime = Time.time;
+        UpdateState(newState);
     }
 
     private void UpdateState(int newState)
@@ -41,7 +67,15 @@ public class Tile : MonoBehaviour
             return;
         }
         
+        int previousState = currentState;
         currentState = newState;
-        spriteRenderer.color = states[currentState];
+        spriteRenderer.sprite = states[currentState];
+
+        tileManager.InformStateChange(this, previousState);
+    }
+
+    public int GetState()
+    {
+        return currentState;
     }
 }

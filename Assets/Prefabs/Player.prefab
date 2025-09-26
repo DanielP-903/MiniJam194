@@ -9,14 +9,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8111158569987809179}
-  - component: {fileID: 82516217552359}
   - component: {fileID: 4128910859219306489}
+  - component: {fileID: 82516217552359}
   - component: {fileID: 8349509875738786695}
   - component: {fileID: 5702093404691897199}
   - component: {fileID: 2216364562821497103}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -37,6 +37,23 @@ Transform:
   - {fileID: 8317216422825046558}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4128910859219306489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 681509285421332085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81ace7696285b8f458f11d49488ffe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SPEED: 5
+  TOXIC_RADIUS: 1.5
+  PROJECTILE_MAX_POWER: 10
+  PROJECTILE_MIN_POWER: 2
+  projectile: {fileID: -664083085677644390, guid: ffe68a7733eefea418e1b169129f6d6e, type: 3}
 --- !u!212 &82516217552359
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -92,20 +109,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4128910859219306489
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 681509285421332085}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81ace7696285b8f458f11d49488ffe58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SPEED: 5
-  TOXIC_RADIUS: 5
 --- !u!114 &8349509875738786695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,7 +155,19 @@ MonoBehaviour:
     m_ActionId: 941a8fa5-f7ba-44c7-9aa0-c90ec714cb82
     m_ActionName: 'Player/Look[/Mouse/delta,/Touchscreen/delta]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4128910859219306489}
+        m_TargetAssemblyTypeName: BasicTopDownPlayerController, Assembly-CSharp
+        m_MethodName: Fire
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: ea5a844a-8088-4b1a-bda2-b26ac2054bf5
     m_ActionName: 'Player/Fire[/Mouse/leftButton,/Touchscreen/primaryTouch/tap]'
   - m_PersistentCalls:
@@ -334,10 +349,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
+    x: -0.17864585
+    y: 0.07222222
+    width: 0.5
+    height: 0.5
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
