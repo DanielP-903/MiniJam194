@@ -63,3 +63,31 @@
     -unity-font-style: bold;
     scale: 1.05 1.05;
 }
+
+.unity-button:focus {
+    justify-content: flex-start;
+    align-self: auto;
+    align-content: flex-start;
+    flex-grow: 1;
+    align-items: stretch;
+    font-size: 100px;
+    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Fonts/PixelifySans-RegularRG.ttf?fileID=12800000&guid=1362791ca63d461428d1e450886d63c0&type=3#PixelifySans-RegularRG");
+    background-color: rgb(186, 255, 25);
+    color: rgb(96, 109, 128);
+    border-left-color: rgb(0, 142, 92);
+    border-right-color: rgb(0, 142, 92);
+    border-top-color: rgb(0, 142, 92);
+    border-bottom-color: rgb(0, 142, 92);
+    border-top-width: 8px;
+    border-right-width: 8px;
+    border-bottom-width: 8px;
+    border-left-width: 8px;
+    border-top-left-radius: 42px;
+    border-top-right-radius: 42px;
+    border-bottom-right-radius: 42px;
+    border-bottom-left-radius: 42px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    -unity-font-style: bold;
+    scale: 1.05 1.05;
+}

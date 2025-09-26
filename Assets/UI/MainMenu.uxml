@@ -3,8 +3,8 @@
     <ui:VisualElement name="Panel" class="panel" style="flex-grow: 1; align-content: flex-start; justify-content: center;">
         <ui:VisualElement name="Container" class="menu" style="flex-grow: 1; flex-direction: column; align-items: stretch; align-content: auto; width: 40%; height: 0%; max-height: 70%; align-self: auto; justify-content: flex-start;">
             <ui:VisualElement name="Logo" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Art/Dan&apos;s%20Test%20Stuff/weeguy.png?fileID=8276948043193051512&amp;guid=dc2252ac16d889a4882f69b97696bf77&amp;type=3#weeguy_0&quot;); -unity-background-scale-mode: scale-to-fit; height: 200px;" />
-            <ui:Button text="Play" name="Button" />
-            <ui:Button text="Quit" />
+            <ui:Button text="Play" name="PlayButton" />
+            <ui:Button text="Quit" name="QuitButton" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
