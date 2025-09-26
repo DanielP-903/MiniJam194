@@ -9,27 +9,21 @@ public class TileManager : MonoBehaviour
     [SerializeField] private int GRID_SIZE_X = 5;
     [SerializeField] private int GRID_SIZE_Y = 5;
 
-    private int noFilledTiles = 0;
-    private float progressPercent = 0.0f;
+    private int noFilledTiles;
+    private float progressPercent;
     
-    private List<GameObject> tiles = new List<GameObject>();
+    private List<Tile> tiles = new List<Tile>();
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         transform.position = new Vector2(-GRID_SIZE_X/2, -GRID_SIZE_Y/2);
-        
-        for (int x = 0; x < GRID_SIZE_X; x++)
+
+        GameObject[] tileObjects = GameObject.FindGameObjectsWithTag("Tile");
+
+        foreach (GameObject tileObject in tileObjects)
         {
-            for (int y = 0; y < GRID_SIZE_Y; y++)
-            {
-                GameObject newTile = Instantiate(tilePrefab, new Vector3(transform.position.x + x, transform.position.y + y), Quaternion.identity);
-                if (newTile != null)
-                {
-                    newTile.transform.parent = transform; // Attach to this
-                    tiles.Add(newTile.gameObject);
-                }
-            }
+            tiles.Add(tileObject.GetComponent<Tile>());
         }
     }
 
@@ -41,10 +35,9 @@ public class TileManager : MonoBehaviour
 
     private void OnGUI()
     {
-        GUIStyle style = new GUIStyle();
-        style.fontSize = 50;
-        GUI.Label(new Rect(10,10,200,40), "Filled " + progressPercent + "%", style);
-        
+        //GUIStyle style = new GUIStyle();
+        //style.fontSize = 50;
+        //GUI.Label(new Rect(10,10,200,40), "Filled " + progressPercent + "%", style);
     }
 
     public void InformStateChange(Tile tile, int previousState)
@@ -56,11 +49,12 @@ public class TileManager : MonoBehaviour
         
         // TODO: this is O(n) could be made a bit better, maps maybe?
         noFilledTiles = 0;
-        foreach (var myTile in tiles.Where(myTile => myTile.GetComponent<Tile>().GetState() == 4))
+        foreach (var myTile in tiles.Where(myTile => myTile.IsAtMaxState()))
         {
             noFilledTiles++;
         }
 
-        progressPercent = ((float) noFilledTiles / (GRID_SIZE_X * GRID_SIZE_Y))* 100;
+        progressPercent = ((float) noFilledTiles / tiles.Count) * 100;
+        //print(progressPercent);
     }
 }

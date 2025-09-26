@@ -5,14 +5,14 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     [SerializeField] private List<Sprite> states;
-    [SerializeField] private int initialState = 0;
+    [SerializeField] private int initialState;
     [SerializeField] private float timeBetweenStates = 1.0f;
     
     private TileManager tileManager;
     
     private SpriteRenderer spriteRenderer;
-    private int currentState = 0;
-    private float changeStateTime = 0.0f;
+    private int currentState;
+    private float changeStateTime;
 
     private void Awake()
     {
@@ -37,6 +37,15 @@ public class Tile : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Enemy"))
         {
+            Enemy enemy = collision.gameObject.GetComponent<Enemy>();
+            float visionAngle = Vector3.Angle(enemy.GetDirectionFacing(), transform.position - collision.gameObject.transform.position);
+            //print(visionAngle);
+            if (visionAngle > enemy.GetVisionAngle())
+            {
+                // Not viable
+                return;
+            }
+            
             if (currentState == 0)
             {
                 // At min
@@ -45,17 +54,39 @@ public class Tile : MonoBehaviour
 
             newState--;
         }
-        
-        float distanceFactor = 1.0f;
-        distanceFactor = Vector3.Distance(transform.position, collision.transform.position);
+
+        var distanceFactor = Vector3.Distance(transform.position, collision.transform.position);
         distanceFactor = Mathf.Clamp(distanceFactor, 0.1f, 10.0f);
         distanceFactor /= 10.0f;
 
-        if (Time.time - changeStateTime < timeBetweenStates * distanceFactor)
+        if (!collision.gameObject.CompareTag("Projectile") && Time.time - changeStateTime < timeBetweenStates * distanceFactor)
         {
             return;
         }
 
+        if (collision.gameObject.CompareTag("Projectile"))
+        {
+            if (currentState == states.Count - 1)
+            {
+                // At max
+                return;
+            }
+
+            if (distanceFactor < 0.2f)
+            {
+                newState++;
+                if (distanceFactor < 0.1f)
+                {
+                    newState++;
+                    if (distanceFactor < 0.05f)
+                    {
+                        newState++;
+                    }
+                }
+            }
+            newState = Mathf.Clamp(newState, 0, states.Count - 1);
+        }
+        
         changeStateTime = Time.time;
         UpdateState(newState);
     }
@@ -77,5 +108,10 @@ public class Tile : MonoBehaviour
     public int GetState()
     {
         return currentState;
+    }
+
+    public bool IsAtMaxState()
+    {
+        return currentState == states.Count - 1;
     }
 }
