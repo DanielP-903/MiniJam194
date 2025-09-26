@@ -49,12 +49,42 @@ public class TileManager : MonoBehaviour
         
         // TODO: this is O(n) could be made a bit better, maps maybe?
         noFilledTiles = 0;
-        foreach (var myTile in tiles.Where(myTile => myTile.IsAtMaxState()))
+        foreach (var myTile in tiles)
         {
-            noFilledTiles++;
+            if (myTile.IsAtMaxState())
+            {
+                noFilledTiles++;
+            }
         }
 
         progressPercent = ((float) noFilledTiles / tiles.Count) * 100;
         //print(progressPercent);
+    }
+
+    public Tile GetRandomTile()
+    {
+        return tiles[UnityEngine.Random.Range(0, tiles.Count)];
+    }
+
+    public Tile GetRandomTileInRadius(Vector3 position, float radius)
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(position, radius);
+        List<Tile> randomTiles = new List<Tile>();
+        foreach (var c in colliders)
+        {
+            c.gameObject.TryGetComponent<Tile>(out var tile);
+            if (tile)
+            {
+                randomTiles.Add(c.gameObject.GetComponent<Tile>());
+            }
+        }
+        
+        // // FOR TESTING TODO: REMOVE
+        // foreach (var tile in randomTiles)
+        // {
+        //     tile.GetComponent<SpriteRenderer>().color = Color.red;
+        // }
+        //
+        return randomTiles[UnityEngine.Random.Range(0, randomTiles.Count)];
     }
 }

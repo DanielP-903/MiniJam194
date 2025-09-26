@@ -51,8 +51,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SPEED: 5
   TOXIC_RADIUS: 1.5
-  PROJECTILE_MAX_POWER: 10
-  PROJECTILE_MIN_POWER: 2
+  PROJECTILE_MAX_POWER: 5
+  PROJECTILE_MIN_POWER: 1
+  FIRE_RATE: 0.25
   projectile: {fileID: -664083085677644390, guid: ffe68a7733eefea418e1b169129f6d6e, type: 3}
 --- !u!212 &82516217552359
 SpriteRenderer:
@@ -349,10 +350,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: -0.17864585
-    y: 0.07222222
-    width: 0.5
-    height: 0.5
+    x: 0
+    y: 0
+    width: 1
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60

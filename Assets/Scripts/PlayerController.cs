@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class BasicTopDownPlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public enum EMoveDirection
     {
@@ -124,7 +124,7 @@ public class BasicTopDownPlayerController : MonoBehaviour
             float power = Time.time - projectileStartTime;
             power *= POWER_SCALE;
             power = Mathf.Clamp(power, PROJECTILE_MIN_POWER, PROJECTILE_MAX_POWER);
-            savedPowerPercent = (power / PROJECTILE_MAX_POWER) * 100;
+            savedPowerPercent = (power / PROJECTILE_MAX_POWER) * 100;   // TODO: will be useful for the shader 0w0
             
             Vector3 position = transform.position + MoveDirectionLookup[facingDirection];
             Projectile newProjectile = Instantiate(projectile, position, Quaternion.identity);

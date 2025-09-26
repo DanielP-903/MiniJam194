@@ -58,7 +58,7 @@ public class Projectile : MonoBehaviour
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, circleCollider.radius);
         foreach(var c in colliders) 
         {
-            c.gameObject.SendMessage("OnTriggerStay2D", circleCollider);
+            c.gameObject.SendMessage("OnTriggerStay2D", circleCollider, SendMessageOptions.DontRequireReceiver);
         }
         
         //print("Impacted!");

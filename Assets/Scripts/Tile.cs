@@ -6,7 +6,8 @@ public class Tile : MonoBehaviour
 {
     [SerializeField] private List<Sprite> states;
     [SerializeField] private int initialState;
-    [SerializeField] private float timeBetweenStates = 1.0f;
+    [SerializeField] private float timeBetweenNegativeStates = 2.0f;    // AKA enemy sprays on tile
+    [SerializeField] private float timeBetweenPositiveStates = 1.0f;    // AKA player goes over tile
     
     private TileManager tileManager;
     
@@ -24,6 +25,8 @@ public class Tile : MonoBehaviour
     private void OnTriggerStay2D(Collider2D collision)
     {
         int newState = currentState;
+
+        float timeDelay;
         
         if (collision.gameObject.CompareTag("Player"))
         {
@@ -33,9 +36,10 @@ public class Tile : MonoBehaviour
                 return;
             }
 
+            timeDelay = timeBetweenPositiveStates;
             newState++;
         }
-        else if (collision.gameObject.CompareTag("Enemy"))
+        else if (collision.gameObject.CompareTag("Enemy") && collision is CircleCollider2D)
         {
             Enemy enemy = collision.gameObject.GetComponent<Enemy>();
             float visionAngle = Vector3.Angle(enemy.GetDirectionFacing(), transform.position - collision.gameObject.transform.position);
@@ -52,14 +56,19 @@ public class Tile : MonoBehaviour
                 return;
             }
 
+            timeDelay = timeBetweenNegativeStates;
             newState--;
+        }
+        else
+        {
+            timeDelay = timeBetweenPositiveStates;
         }
 
         var distanceFactor = Vector3.Distance(transform.position, collision.transform.position);
         distanceFactor = Mathf.Clamp(distanceFactor, 0.1f, 10.0f);
         distanceFactor /= 10.0f;
 
-        if (!collision.gameObject.CompareTag("Projectile") && Time.time - changeStateTime < timeBetweenStates * distanceFactor)
+        if (!collision.gameObject.CompareTag("Projectile") && Time.time - changeStateTime < timeDelay * distanceFactor)
         {
             return;
         }
