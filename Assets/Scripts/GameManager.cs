@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class GameManager : MonoBehaviour
             tileTickTimer = Time.time;
             float additionalScore = (tileManager.GetNumberOfTilesCaptured() * STANDARD_SCORE_MULTIPLIER);
             int scoreToAdd = Mathf.RoundToInt(additionalScore);
-            print("Added score: +" + scoreToAdd);
+            //print("Added score: +" + scoreToAdd);
             IncreaseScore(scoreToAdd);
         }
     }
@@ -36,6 +37,16 @@ public class GameManager : MonoBehaviour
             alignment = TextAnchor.UpperRight,
         };
         GUI.Label(new Rect(Screen.currentResolution.width - 220, 40,200,40), "SCORE: " + score.ToString("0000000000") , style);
-        GUI.Label(new Rect(Screen.currentResolution.width - 220, 100,200,40), "HEALTH: " + score + "%" , style);
+        GUI.Label(new Rect(Screen.currentResolution.width - 220, 100,200,40), "HEALTH: " + playerController.GetCurrentHealth() + "%" , style);
+    }
+
+    public void OnPlayerDeath()
+    {
+        SceneManager.LoadScene("Main Menu Scene", LoadSceneMode.Single);
+    }
+
+    public float GetScoreMultiplier()
+    {
+        return Mathf.Clamp(1.0f + ((float)tileManager.GetNumberOfTilesCaptured() / tileManager.GetNumberOfTiles()), 1.0f, 1.5f);
     }
 }

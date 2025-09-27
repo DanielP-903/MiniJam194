@@ -79,4 +79,9 @@ public class TileManager : MonoBehaviour
     {
         return noFilledTiles;
     }
+
+    public int GetNumberOfTiles()
+    {
+        return tiles.Count;
+    }
 }

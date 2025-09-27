@@ -24,9 +24,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float TOXIC_RADIUS = 5;
     [SerializeField] private float PROJECTILE_MAX_POWER = 10;
     [SerializeField] private float PROJECTILE_MIN_POWER = 2;
+    [SerializeField] private float PROJECTILE_START_DAMAGE = 2;
     [SerializeField] private float FIRE_RATE = 1;
     [SerializeField] private Projectile projectile;
+    [SerializeField] private GameManager gameManager;
 
+    private const float MAX_HEALTH = 100.0f;
+    private float currentHealth = MAX_HEALTH;
+    
     private const float POWER_SCALE = 20;
 
     private float projectileStartTime;
@@ -40,6 +45,7 @@ public class PlayerController : MonoBehaviour
     private float savedPowerPercent;
 
     private bool canFire = true;
+    private bool isCharging = false;
     private float lastFireTime;
     
     private EMoveDirection facingDirection = EMoveDirection.Up;
@@ -66,6 +72,11 @@ public class PlayerController : MonoBehaviour
 
     private void ProcessInput()
     {
+        if (isCharging)
+        {
+            return;
+        }
+        
         Vector2 velocity = Vector2.zero;
         if (moveUp)
         {
@@ -89,17 +100,16 @@ public class PlayerController : MonoBehaviour
         }
         
         rb.linearVelocity = velocity.normalized * SPEED;
-        //transform.Translate(velocity.normalized * (SPEED * Time.deltaTime), Space.World);
     }
 
     public void Move(InputAction.CallbackContext context)
     {
         Vector2 value = context.ReadValue<Vector2>();
 
-        moveRight = value.x > 0;
-        moveLeft = value.x < 0;
-        moveUp = value.y > 0;
-        moveDown = value.y < 0;
+        moveRight = value.x > 0.5f;
+        moveLeft = value.x < -0.5f;
+        moveUp = value.y > 0.5f;
+        moveDown = value.y < -0.5f;
 
         // Print current action bools
         //Debug.Log("Move Input (left, right, up, down): " + moveLeft + ", " + moveRight+ ", " + moveUp + ", " + moveDown);
@@ -109,11 +119,14 @@ public class PlayerController : MonoBehaviour
     {
         if (context.performed)
         {
+            isCharging = true;
+            rb.linearVelocity = Vector2.zero;
             projectileStartTime = Time.time;
             //print("Charging...");
         }
         else if (context.canceled)
         {
+            isCharging = false;
             if (!canFire)
             {
                 return;
@@ -138,5 +151,35 @@ public class PlayerController : MonoBehaviour
         //GUIStyle style = new GUIStyle();
         //style.fontSize = 50;
         //GUI.Label(new Rect(10,70,200,40), "Charged " + savedPowerPercent + "%", style);
+    }
+
+    public float GetCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (!collision.gameObject.CompareTag("Enemy") || collision is not CircleCollider2D)
+            return;
+        
+        Enemy collidedEnemy = collision.gameObject.GetComponent<Enemy>();
+        
+        // Detected enemy spray
+        if (collidedEnemy.GetSprayingInLocation(transform.position))
+        {
+            // We are inside the spray location;
+            currentHealth -= collidedEnemy.GetPlayerDamageTickAmount() * Time.deltaTime;
+            if (currentHealth <= 0)
+            {
+                // We are dead.
+                gameManager.OnPlayerDeath();
+            }
+        }
+    }
+
+    public float GetCurrentProjectileDamage()
+    {
+        return PROJECTILE_START_DAMAGE * gameManager.GetScoreMultiplier();
     }
 }

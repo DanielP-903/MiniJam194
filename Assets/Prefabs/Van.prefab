@@ -204,6 +204,7 @@ MonoBehaviour:
   - {fileID: 642944563015265592, guid: 1f6fd6fe724bdc34eaf4439d2759d589, type: 3}
   - {fileID: 6536039012266425749, guid: 1f6fd6fe724bdc34eaf4439d2759d589, type: 3}
   initialState: 0
+  canBeHealed: 0
   timeBetweenNegativeStates: 10
   timeBetweenPositiveStates: 1
   spawnLocations:
@@ -211,6 +212,7 @@ MonoBehaviour:
   - {fileID: 505980655022219148}
   - {fileID: 2500469852619325659}
   - {fileID: 8898295693438116835}
+  VAN_ENTER_SPEED: 3
 --- !u!61 &5510879973423212918
 BoxCollider2D:
   m_ObjectHideFlags: 0

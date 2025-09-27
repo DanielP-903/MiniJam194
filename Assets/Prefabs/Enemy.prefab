@@ -49,7 +49,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32c33e838ee1252438c44fdb2dfa3f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ENEMY_MAX_HEALTH: 100
   ENEMY_RADIUS: 3
   ENEMY_VISION_ANGLE: 80
   ENEMY_MOVEMENT_SPEED: 2
@@ -57,6 +56,7 @@ MonoBehaviour:
   ENEMY_MAX_MOVE_TIME: 5
   ENEMY_SPRAY_MIN_DURATION: 2
   ENEMY_SPRAY_MAX_DURATION: 3
+  ENEMY_KILL_BONUS_SCORE: 100
   statusText: {fileID: 6694245053934873895}
 --- !u!212 &4970055684709091891
 SpriteRenderer:
@@ -242,8 +242,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 1}
-  m_SizeDelta: {x: 190, y: 40}
+  m_AnchoredPosition: {x: 0, y: 1.5}
+  m_SizeDelta: {x: 190, y: 39}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7316961713461844348
 CanvasRenderer:
