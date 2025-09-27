@@ -12,7 +12,7 @@ public class TileManager : MonoBehaviour
     private int noFilledTiles;
     private float progressPercent;
     
-    private List<Tile> tiles = new List<Tile>();
+    private readonly List<Tile> tiles = new List<Tile>();
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,19 +25,6 @@ public class TileManager : MonoBehaviour
         {
             tiles.Add(tileObject.GetComponent<Tile>());
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    private void OnGUI()
-    {
-        //GUIStyle style = new GUIStyle();
-        //style.fontSize = 50;
-        //GUI.Label(new Rect(10,10,200,40), "Filled " + progressPercent + "%", style);
     }
 
     public void InformStateChange(Tile tile, int previousState)
@@ -86,5 +73,10 @@ public class TileManager : MonoBehaviour
         // }
         //
         return randomTiles[UnityEngine.Random.Range(0, randomTiles.Count)];
+    }
+
+    public int GetNumberOfTilesCaptured()
+    {
+        return noFilledTiles;
     }
 }

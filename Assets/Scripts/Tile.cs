@@ -6,8 +6,8 @@ public class Tile : MonoBehaviour
 {
     [SerializeField] private List<Sprite> states;
     [SerializeField] private int initialState;
-    [SerializeField] private float timeBetweenNegativeStates = 2.0f;    // AKA enemy sprays on tile
-    [SerializeField] private float timeBetweenPositiveStates = 1.0f;    // AKA player goes over tile
+    [SerializeField, Tooltip("AKA enemy sprays on tile")] private float timeBetweenNegativeStates = 2.0f;    // AKA enemy sprays on tile
+    [SerializeField, Tooltip("AKA player goes over tile")] private float timeBetweenPositiveStates = 1.0f;    // AKA player goes over tile
     
     private TileManager tileManager;
     
