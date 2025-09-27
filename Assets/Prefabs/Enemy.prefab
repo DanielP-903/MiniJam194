@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4970055684709091891}
   - component: {fileID: 6512033417172442091}
   - component: {fileID: 686648953818663428}
+  - component: {fileID: 4641392079561225068}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -48,6 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32c33e838ee1252438c44fdb2dfa3f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ENEMY_MAX_HEALTH: 100
   ENEMY_RADIUS: 3
   ENEMY_VISION_ANGLE: 80
   ENEMY_MOVEMENT_SPEED: 2
@@ -100,7 +102,7 @@ SpriteRenderer:
   m_SortingLayerID: 137749325
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: -686340468548866310, guid: 37e7fb1588ff93e4c9b6040548a2e121, type: 3}
+  m_Sprite: {fileID: -2388611721508771250, guid: 62d87af4b14589047b39b4f53308cac0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -145,17 +147,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.26241088, y: -0.37564728}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.875, y: 0.8125}
+    oldSize: {x: 2.5, y: 2.75}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.8125, y: 0.875}
+  m_Size: {x: 1.545289, y: 1.7877784}
   m_EdgeRadius: 0
 --- !u!50 &686648953818663428
 Rigidbody2D:
@@ -184,6 +186,28 @@ Rigidbody2D:
   m_SleepingMode: 0
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!95 &4641392079561225068
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2979358994387946526}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d1c42acfe021a37488c1311145032059, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6550343206694329038
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,15 +275,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8a994a7687cb3c54492e2d591470f22b, type: 2}
+  m_sharedMaterial: {fileID: 5497617180000065929, guid: 8a994a7687cb3c54492e2d591470f22b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4278228734
+  m_fontColor: {r: 0.9960785, g: 0.5882353, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -276,13 +300,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 8
-  m_fontSizeBase: 8
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
