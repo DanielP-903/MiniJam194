@@ -17,6 +17,11 @@ public class Particles : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.isGameOver)
+        {
+            return;
+        }
+        
         if (Time.time - startTime > lifetime)
         {
             // That's us done!

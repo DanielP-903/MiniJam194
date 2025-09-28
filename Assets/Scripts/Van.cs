@@ -17,7 +17,10 @@ public class Van : Tile
     [SerializeField] private List<GameObject> spawnLocations;
     [SerializeField] private float VAN_ENTER_SPEED = 3.0f;
     [SerializeField] private AnimationClip VAN_DESTROY_ANIM;
+    [SerializeField] private AudioClip AUDIO_CLIP_VAN_MOVING;
+    [SerializeField] private AudioClip AUDIO_CLIP_VAN_DESTROYED;
 
+    private AudioSource audioSource;
     private BoxCollider2D boxCollider;
     
     private EVanState vanState = EVanState.Entering;
@@ -34,6 +37,7 @@ public class Van : Tile
         active = false;
         boxCollider = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
         
         vanDeathDuration = VAN_DESTROY_ANIM.length;
     }
@@ -45,6 +49,14 @@ public class Van : Tile
 
     private void Update()
     {
+        if (GameManager.Instance.isGameOver)
+        {
+            audioSource.Stop();
+            return;
+        }
+        
+        print("I AM PLAYING: " + audioSource.clip.name);
+        
         // FOR DEBUGGING TODO: REMOVE
         //statusText.text = "Layer = " + spriteRenderer.sortingOrder + "\n" + (GetNumStates() - GetState()) + "\n";
 
@@ -62,9 +74,11 @@ public class Van : Tile
                 if (transform.position == vanDestination)
                 {
                     vanState = EVanState.Idle;
+                    audioSource.Stop();
                 }
                 break;
             case EVanState.Idle:
+                audioSource.Stop();
                 break;
             case EVanState.Dead:
                 if (Time.time - deathStartTime > vanDeathDuration)
@@ -86,9 +100,11 @@ public class Van : Tile
     public void Activate()
     {
         active = true;
-        vanState = EVanState.Entering;
-        UpdateState(initialState);
         gameObject.SetActive(true);
+        vanState = EVanState.Entering;
+        audioSource.enabled = true;
+        audioSource.Play();
+        UpdateState(initialState);
         enabled = true;
     }
     
@@ -96,6 +112,9 @@ public class Van : Tile
     {
         active = false;
         gameObject.SetActive(false);
+        audioSource.enabled = false;
+        audioSource.clip = AUDIO_CLIP_VAN_MOVING;
+        audioSource.loop = true;
         enabled = false;
     }
 
@@ -125,6 +144,11 @@ public class Van : Tile
         deathStartTime =  Time.time;
         animator.enabled = true;
         animator.Play("VanDeath");
+
+        audioSource.clip = AUDIO_CLIP_VAN_DESTROYED;
+        audioSource.loop = false;
+        audioSource.Play();
+        
         GameManager.Instance.enemyManager.OnVanDestroyed(this);
         GameManager.Instance.IncreaseScore(BONUS_SCORE_REWARD);
     }

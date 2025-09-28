@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     public int score { get; private set; }
 
     public bool isGameOver { get; private set; }
+    public bool hasWon { get; private set; }
 
     private void Awake() 
     { 
@@ -71,16 +72,10 @@ public class GameManager : MonoBehaviour
             IncreaseScore(scoreToAdd);
         }
 
-        if (tileManager.GetNumberOfTilesCaptured() / tileManager.GetNumberOfTiles() >
-            (int) (TILE_SCORE_TICK_TIME / 100))
+        if ((float)tileManager.GetNumberOfTilesCaptured() / tileManager.GetNumberOfTiles() > (TILE_FILL_GOAL_PERCENT / 100.0f))
         {
-            // Finished game
-            isGameOver = true;
-            
-            // Show end screen hud elements
-            SceneManager.LoadScene("End Level", LoadSceneMode.Additive);
-
-            Time.timeScale = 0;
+            EndGame();
+            hasWon = true;
         }
     }
 
@@ -108,13 +103,27 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
-        
-        isGameOver = true;
 
-        SceneManager.LoadScene("End Level", LoadSceneMode.Additive);
-        audioSource.Stop();
+        EndGame();
+        hasWon = false;
     }
 
+    private void EndGame()
+    {        
+        // Finished game
+        isGameOver = true;
+        
+        audioSource.Stop();
+        
+        playerHUD.gameObject.SetActive(false);
+        
+        particleManager.DestroyAllParticles();
+        
+        // Show end screen hud elements
+        SceneManager.LoadScene("End Level", LoadSceneMode.Additive);
+    
+    }
+    
     public float GetScoreMultiplier()
     {
         return Mathf.Clamp(1.0f + ((float)tileManager.GetNumberOfTilesCaptured() / tileManager.GetNumberOfTiles()), 1.0f, 1.5f);

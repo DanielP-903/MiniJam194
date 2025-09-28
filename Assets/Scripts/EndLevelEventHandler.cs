@@ -29,10 +29,11 @@ public class EndLevelEventHandler : MonoBehaviour
         scoreLabel = rootElement.Q<Label>("ScoreLabel");
         filledPercentLabel = rootElement.Q<Label>("FillLabel");
 
-        scoreLabel.text = "Score: " + GameManager.Instance.score.ToString();
-        filledPercentLabel.text = "Filled: " +
-            (GameManager.Instance.tileManager.GetNumberOfTilesCaptured() /
-             GameManager.Instance.tileManager.GetNumberOfTiles()).ToString("0.0") + "%";
+        scoreLabel.text = "Score: " + GameManager.Instance.score.ToString("00000000");
+        filledPercentLabel.text = "";
+        // filledPercentLabel.text = "Filled: " +
+        //     ((float)GameManager.Instance.tileManager.GetNumberOfTilesCaptured() /
+        //      GameManager.Instance.tileManager.GetNumberOfTiles()).ToString("0.0") + "%";
     }
     
     private void OnContinueButtonClicked()
