@@ -1,0 +1,12 @@
+VisualElement {
+}
+
+.panel {
+}
+
+.score {
+    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Fonts/PixelifySans-RegularRG.ttf?fileID=12800000&guid=1362791ca63d461428d1e450886d63c0&type=3#PixelifySans-RegularRG");
+    font-size: 64px;
+    color: rgb(255, 255, 255);
+    text-shadow: 4px 8px 0 rgb(0, 0, 0);
+}

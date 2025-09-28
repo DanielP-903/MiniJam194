@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/HUD.uss?fileID=7433441132597879392&amp;guid=b067d64cc99955a40b2358759e30fc1f&amp;type=3#HUD" />
+    <ui:VisualElement name="Panel" class="panel" style="flex-grow: 1;">
+        <ui:VisualElement name="TopRightBox" style="flex-grow: 1; align-self: flex-end; flex-direction: row; align-items: flex-start;">
+            <ui:Label text="Score" name="ScoreText" class="score" />
+            <ui:Label text="00000000" name="Score" class="score" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
