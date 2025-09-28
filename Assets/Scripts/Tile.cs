@@ -240,8 +240,11 @@ public class Tile : MonoBehaviour
 
         if (previousState != currentState && currentState == states.Count - 1)
         {
-            // Reached max state
-            OnReachedMaxState();
+            if (currentState == states.Count - 1)
+            {
+                // Reached max state
+                OnReachedMaxState();
+            }
         }
         
         GameManager.Instance.tileManager.InformStateChange(this, previousState);
@@ -263,6 +266,16 @@ public class Tile : MonoBehaviour
     }
     
     protected virtual void OnReachedMaxState()
+    {
+        // does something...
+    }
+    
+    protected virtual void OnDamageTaken()
+    {
+        // does something...
+    }    
+    
+    protected virtual void OnRepairReceived()
     {
         // does something...
     }

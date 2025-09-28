@@ -30,6 +30,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float ENEMY_SPRAY_MIN_DURATION = 2.0f;
     [SerializeField] private float ENEMY_SPRAY_MAX_DURATION = 3.0f;
     [SerializeField] private AnimationClip ENEMY_DEATH_ANIM;
+    [SerializeField] private AudioClip AUDIO_CLIP_SPRAY;
+    [SerializeField] private AudioClip AUDIO_CLIP_HIT;
+    [SerializeField] private AudioClip AUDIO_CLIP_DEATH;
     [SerializeField] private int ENEMY_KILL_BONUS_SCORE = 100;
     [SerializeField] private TMP_Text statusText;
 
@@ -44,6 +47,7 @@ public class Enemy : MonoBehaviour
 
     private EEnemyPersonality personality = EEnemyPersonality.Grunt;
     
+    private AudioSource audioSource;
     private Animator animator;
     private Rigidbody2D rb;
     private CircleCollider2D circleCollider;
@@ -75,6 +79,7 @@ public class Enemy : MonoBehaviour
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
         circleCollider = gameObject.AddComponent<CircleCollider2D>();
         circleCollider.radius = ENEMY_RADIUS;
         circleCollider.isTrigger = true;
@@ -84,7 +89,14 @@ public class Enemy : MonoBehaviour
     }
 
     private void Update()
-    {        
+    {               
+        if (GameManager.Instance.isGameOver)
+        {
+            rb.linearVelocity = Vector3.zero;
+            audioSource.Stop();
+            return;
+        }
+
         if (!active)
         {
             return;
@@ -128,7 +140,24 @@ public class Enemy : MonoBehaviour
     
     // Fixed update is called once per frame
     private void FixedUpdate()
-    {
+    {       
+        if (GameManager.Instance.isGameOver)
+        {
+            animator.SetFloat(MovementVelocity, 0.0f);
+            animator.SetBool(IsSpraying, false);
+            if (!GameManager.Instance.hasWon && !animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyCelebrate"))
+            {
+                animator.Play("EnemyCelebrate");
+            }
+            else if (GameManager.Instance.hasWon && currentState != EEnemyState.Dead)
+            {
+                stateStartTime =  Time.time;
+                currentState = EEnemyState.Dead;
+                TickDeath();
+            }
+            return;
+        }
+
         if (!active)
         {
             return;
@@ -155,7 +184,6 @@ public class Enemy : MonoBehaviour
                 else
                 {
                     rb.linearVelocity = directionTo * enemyMovementSpeed;
-                    //Debug.DrawLine(transform.position, destination, Color.red);
                 }
                 break;
             case EEnemyState.Spraying:
@@ -167,12 +195,7 @@ public class Enemy : MonoBehaviour
                 }
                 break;
             case EEnemyState.Dead:
-                rb.linearVelocity = Vector3.zero;
-                if (Time.time - stateStartTime > enemyDeathDuration)
-                {
-                    // Ok we've suffered enough, kill me
-                    Deactivate();
-                }
+                TickDeath();
                 break;
         }
 
@@ -184,6 +207,16 @@ public class Enemy : MonoBehaviour
         //statusText.text = "Layer = " + spriteRenderer.sortingOrder + "\n" + currentHealth.ToString("#0") + "\n" + personality.ToString() + " | " + currentState.ToString() + " : " + (Time.time - stateStartTime).ToString("#0.00");
     }
 
+    private void TickDeath()
+    {
+        rb.linearVelocity = Vector3.zero;
+        if (Time.time - stateStartTime > enemyDeathDuration)
+        {
+            // Ok we've suffered enough, kill me
+            Deactivate();
+        }
+    }
+    
     private void initState()
     {
         stateStartTime = Time.time;
@@ -226,6 +259,11 @@ public class Enemy : MonoBehaviour
                 animator.SetFloat(MovementVelocity, enemyMovementSpeed);
                 animator.SetBool(IsSpraying, false);
 
+                if (audioSource.isPlaying)
+                {
+                    audioSource.Stop();
+                }
+
                 break;
             
             case EEnemyState.Spraying:
@@ -237,6 +275,11 @@ public class Enemy : MonoBehaviour
                 animator.SetFloat(MovementVelocity, 0.0f);
                 animator.SetBool(IsSpraying, true);
 
+                // Play audio
+                audioSource.clip = AUDIO_CLIP_SPRAY;
+                audioSource.loop = true;
+                audioSource.Play();
+                
                 break;
             
             case EEnemyState.Dead:
@@ -248,6 +291,10 @@ public class Enemy : MonoBehaviour
                 animator.SetBool(IsSpraying, false);
                 animator.Play("EnemyDeath");
  
+                audioSource.Stop();
+                audioSource.clip = AUDIO_CLIP_DEATH;
+                audioSource.loop = false;
+                audioSource.Play();
                 break;
         }
         
@@ -268,20 +315,23 @@ public class Enemy : MonoBehaviour
     public void Activate()
     {
         active = true;
+        audioSource.enabled = true;
+
         personality = (EEnemyPersonality)Random.Range(0, Enum.GetValues(typeof(EEnemyPersonality)).Length);
         //print("I am " + personality);
         changeState(EEnemyState.Moving);
         myMoveDirection = PlayerController.EMoveDirection.Down;
         currentHealth = ENEMY_MAX_HEALTH;
         boxCollider.enabled = true;
-
+        
         gameObject.SetActive(true);
     }
     
     public void Deactivate()
     {
         active = false;
-        
+        audioSource.enabled = false;
+
         gameObject.SetActive(false);
     }
 
@@ -319,12 +369,15 @@ public class Enemy : MonoBehaviour
                 changeState(EEnemyState.Dead);
                 boxCollider.enabled = false;
                 currentHealth = 0;
-                rb.linearVelocity = Vector3.zero;
             }
             else
             {
+                changeState(EEnemyState.Moving);
                 animator.Play("EnemyHitByProjectile");
+                audioSource.PlayOneShot(AUDIO_CLIP_HIT);
             }
+            
+            rb.linearVelocity = Vector3.zero;
         }
     }
 }

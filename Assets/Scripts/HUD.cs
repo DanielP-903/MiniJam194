@@ -66,13 +66,23 @@ public class HUD : MonoBehaviour
     }
 
     public void UpdateScore(int score)
-    {
+    {       
+        if (GameManager.Instance.isGameOver)
+        {
+            return;
+        }
+
         scoreText.text = "Score " + score.ToString("00000000");
         scoreBumpTime = Time.time;
     }
 
     public void UpdateFillPercentage(float fillPercentage)
     {
+        if (GameManager.Instance.isGameOver)
+        {
+            return;
+        }
+        
         if (fillPercentage.ToString("0.0") == previousFillPercent.ToString("0.0"))
         {
             // Same thing

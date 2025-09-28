@@ -83,7 +83,6 @@ public class Projectile : MonoBehaviour
     {
         return savedPower;
     }
-
     
     public void Activate()
     {

@@ -75,4 +75,19 @@ public class ParticleManager : MonoBehaviour
     {
         particlesAlive--;
     }
+
+    public void DestroyAllParticles()
+    {
+        foreach (var particles in particlePools[EParticleType.Toxic])
+        {
+            particles.Deactivate();
+            particlesAlive--;
+        }
+        
+        foreach (var particles in particlePools[EParticleType.Spray])
+        {
+            particles.Deactivate();
+            particlesAlive--;
+        }
+    }
 }

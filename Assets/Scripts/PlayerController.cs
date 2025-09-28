@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class PlayerController : MonoBehaviour
 {
@@ -35,10 +36,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float LOBBER_ARROW_OFFSET = 5.0f;
     
     [SerializeField] private int PROJECTILE_POOL_SIZE = 5;
-    
     [SerializeField] private Projectile projectilePrefab;
+    
+    [SerializeField] private AudioClip AUDIO_CLIP_MOVE;
+    [SerializeField] private AudioClip AUDIO_CLIP_CHARGE;
+    [SerializeField] private AudioClip AUDIO_CLIP_FIRE;
+
     [SerializeField] private GameObject lobberArrow;
     [SerializeField] private TMP_Text statusText;
+    
 
     private const float MAX_HEALTH = 100.0f;
     private float currentHealth = MAX_HEALTH;
@@ -54,10 +60,15 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private CircleCollider2D circleCollider;
     private SpriteRenderer spriteRenderer;
+    private AudioSource audioSource;
 
+    private float lastPlayedMoveAudioTime = 0.0f;
+    
     private bool canFire = true;
     private bool isCharging = false;
     private float lastFireTime;
+
+    private bool hasPlayedDeathAnim = false;
     
     private EMoveDirection facingDirection = EMoveDirection.Up;
     
@@ -68,6 +79,7 @@ public class PlayerController : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         circleCollider = gameObject.AddComponent<CircleCollider2D>();
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
         circleCollider.radius = TOXIC_RADIUS;
         circleCollider.isTrigger = true;
         lobberArrow.SetActive(false);
@@ -82,7 +94,22 @@ public class PlayerController : MonoBehaviour
 
     // Update is called once per frame
     private void Update()
-    {
+    {        
+        if (GameManager.Instance.isGameOver)
+        {
+            rb.linearVelocity = Vector3.zero;
+            audioSource.Stop();
+
+            if (!GameManager.Instance.hasWon && !hasPlayedDeathAnim)
+            {
+                // you died X_X
+                animator.Play("PlayerDeathForwards");
+                hasPlayedDeathAnim = true;
+            }
+            
+            return;
+        }
+
         ProcessInput();
 
         spriteRenderer.sortingOrder = (-(int)transform.position.y);
@@ -97,6 +124,17 @@ public class PlayerController : MonoBehaviour
         }
         
         animator.SetFloat(MovementSpeed, rb.linearVelocity.magnitude);
+
+        if (rb.linearVelocity.magnitude > 0.2f && Time.time - lastPlayedMoveAudioTime > 0.5f)
+        {
+            audioSource.PlayOneShot(AUDIO_CLIP_MOVE, Random.Range(0.5f, 0.7f));
+            lastPlayedMoveAudioTime =  Time.time;
+        }
+
+        float scaleValue = ((float)GameManager.Instance.tileManager.GetNumberOfTilesCaptured() / GameManager.Instance.tileManager.GetNumberOfTiles()); 
+        float scaleAmount = Mathf.Lerp(1.0f, 2.5f, scaleValue);
+        transform.localScale = new Vector3(1.0f + scaleAmount, 1.0f + scaleAmount, 1.0f);
+        circleCollider.radius = TOXIC_RADIUS + (scaleAmount - 1.0f);
         
         if (isCharging)
         {
@@ -175,7 +213,12 @@ public class PlayerController : MonoBehaviour
     }
     
     public void Move(InputAction.CallbackContext context)
-    {
+    {        
+        if (GameManager.Instance.isGameOver)
+        {
+            return;
+        }
+
         Vector2 value = context.ReadValue<Vector2>();
 
         moveRight = value.x > 0.5f;
@@ -185,9 +228,15 @@ public class PlayerController : MonoBehaviour
     }
 
     public void Fire(InputAction.CallbackContext context)
-    {
-        if (context.performed)
+    {        
+        if (GameManager.Instance.isGameOver)
         {
+            return;
+        }
+
+        if (context.performed)
+        {        
+            audioSource.PlayOneShot(AUDIO_CLIP_CHARGE, 0.8f);
             animator.Play("PlayerChargeSide");
             isCharging = true;
             lobberArrow.SetActive(true);
@@ -210,7 +259,9 @@ public class PlayerController : MonoBehaviour
         }
         canFire = false;
         lastFireTime = Time.time;
-            
+        
+        audioSource.PlayOneShot(AUDIO_CLIP_FIRE, 0.8f);
+        
         float power = (Time.time - projectileStartTime) / PROJECTILE_CHARGE_TIME;
         power = Mathf.Clamp(power, 0.2f, 1.0f);
         power *= POWER_SCALE;
