@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 2168635737484692564}
   - component: {fileID: 7485889345363469017}
   m_Layer: 0
-  m_Name: GrassTile 2
+  m_Name: GrassConcreteTLTile
   m_TagString: Tile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -135,9 +135,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   states:
-  - {fileID: -1907339837, guid: ae1a9cbd3669630419e9c873c9cc3e9d, type: 3}
-  - {fileID: -41275661, guid: ae1a9cbd3669630419e9c873c9cc3e9d, type: 3}
-  - {fileID: 944739670, guid: ae1a9cbd3669630419e9c873c9cc3e9d, type: 3}
+  - {fileID: 8371019140385695755, guid: 8157e5c7e3b222e4ca49a629ecb6dea5, type: 3}
+  - {fileID: -1844326878, guid: 8157e5c7e3b222e4ca49a629ecb6dea5, type: 3}
   initialState: 0
   canBeHealed: 1
   timeBetweenNegativeStates: 2
@@ -186,7 +185,7 @@ SpriteRenderer:
   m_SortingLayerID: 1381333631
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1907339837, guid: ae1a9cbd3669630419e9c873c9cc3e9d, type: 3}
+  m_Sprite: {fileID: 8371019140385695755, guid: 8157e5c7e3b222e4ca49a629ecb6dea5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
