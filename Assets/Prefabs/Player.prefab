@@ -61,10 +61,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
+    x: 0.11979167
+    y: -0.09259259
+    width: 0.5
+    height: 0.5
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -411,7 +411,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.029266953, y: -0.25242752}
+  m_Offset: {x: 0.026244193, y: -0.48820576}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -421,7 +421,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.1929705, y: 0.8969501}
+  m_Size: {x: 1.0539217, y: 0.42539364}
   m_EdgeRadius: 0
 --- !u!50 &2216364562821497103
 Rigidbody2D:
@@ -606,8 +606,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4287102464
-  m_fontColor: {r: 0, g: 0.99607843, b: 0.52783483, a: 1}
+    rgba: 4278255333
+  m_fontColor: {r: 0.8980393, g: 0.99607843, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -630,7 +630,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
