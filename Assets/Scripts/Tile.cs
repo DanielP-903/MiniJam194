@@ -9,22 +9,19 @@ public class Tile : MonoBehaviour
     [SerializeField, Tooltip("AKA enemy sprays on tile")] private float timeBetweenNegativeStates = 2.0f;    // AKA enemy sprays on tile
     [SerializeField, Tooltip("AKA player goes over tile")] private float timeBetweenPositiveStates = 1.0f;    // AKA player goes over tile
     
-    private TileManager tileManager;
-    
     protected SpriteRenderer spriteRenderer;
     private int currentState;
     private float changeStateTime;
     
     protected bool active = true;
 
-    private void Awake()
+    private void Start()
     {
         Init();
     }
 
     protected void Init()
     {
-        tileManager = GameObject.Find("TileManager").GetComponent<TileManager>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         UpdateState(initialState);
     }
@@ -89,24 +86,31 @@ public class Tile : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Projectile"))
         {
+            Projectile projectile = collision.gameObject.GetComponent<Projectile>();
             if (currentState == states.Count - 1)
             {
                 // At max
                 return;
             }
 
-            if (distanceFactor < 0.2f)
+            float powerOffset = (projectile.GetPower() / 10.0f);
+            float distanceCheck = 0.2f + powerOffset;
+            for (int i = 0; i < states.Count; i++)
             {
-                newState++;
-                if (distanceFactor < 0.1f)
+                if (newState == states.Count - 1)
                 {
-                    newState++;
-                    if (distanceFactor < 0.05f)
-                    {
-                        newState++;
-                    }
+                    break;
                 }
+
+                if (distanceFactor >= distanceCheck)
+                {
+                    break;
+                }
+
+                newState++;
+                distanceCheck /= 2.0f;
             }
+
             newState = Mathf.Clamp(newState, 0, states.Count - 1);
         }
         
@@ -129,10 +133,12 @@ public class Tile : MonoBehaviour
         int previousState = currentState;
         currentState = newState;
         spriteRenderer.sprite = states[currentState];
+        spriteRenderer.sortingOrder = currentState;
         transform.GetChild(0).TryGetComponent(out SpriteRenderer childSpriteRenderer);
         if (childSpriteRenderer)
         {
             childSpriteRenderer.color = new Color(0.0f, 0.0f, 0.0f, (float)(currentState + 1) / states.Count);
+            childSpriteRenderer.sortingOrder = currentState - 1;
         }
 
         if (newState == states.Count - 1)
@@ -141,7 +147,7 @@ public class Tile : MonoBehaviour
             OnReachedMaxState();
         }
         
-        tileManager.InformStateChange(this, previousState);
+        GameManager.Instance.tileManager.InformStateChange(this, previousState);
     }
 
     public int GetState()
@@ -149,6 +155,11 @@ public class Tile : MonoBehaviour
         return currentState;
     }
 
+    protected int GetNumStates()
+    {
+        return states.Count - 1;
+    }
+    
     public bool IsAtMaxState()
     {
         return currentState == states.Count - 1;

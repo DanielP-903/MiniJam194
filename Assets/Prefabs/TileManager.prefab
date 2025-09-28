@@ -45,5 +45,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 1286223509266222679, guid: f673d5c169c8039408b2f7c4863f4b9c, type: 3}
-  GRID_SIZE_X: 100
-  GRID_SIZE_Y: 50

@@ -7,6 +7,7 @@ public class Projectile : MonoBehaviour
     private bool isFiring;
     private Vector3 savedStartPos;
     private Vector3 savedEndPos;
+    private float savedPower;
     
     [SerializeField] private float BASE_SPEED = 10;
     private float speed = 10;
@@ -39,17 +40,20 @@ public class Projectile : MonoBehaviour
             transform.position = savedEndPos;
             transform.localScale = new Vector3(1, 1, 1);
             circleCollider.enabled = true;
+            circleCollider.radius = savedPower;
             isFiring = false;
             OnImpact();
         }
     }
     
-    public void Fire(Vector3 endPos)
+    public void Fire(Vector3 endPos, float power)
     {
         isFiring = true;
         elapsedTime = 0.0f;
         savedStartPos = transform.position;
         savedEndPos = endPos;
+        savedPower = Mathf.Clamp(power, 1.5f,5.0f);
+        print("Power = " + power);
         speed = BASE_SPEED / Vector3.Distance(savedStartPos, savedEndPos);
     }
 
@@ -63,5 +67,10 @@ public class Projectile : MonoBehaviour
         
         //print("Impacted!");
         Destroy(gameObject);
+    }
+
+    public float GetPower()
+    {
+        return savedPower;
     }
 }

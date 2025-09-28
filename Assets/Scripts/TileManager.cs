@@ -1,28 +1,22 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class TileManager : MonoBehaviour
 {
     [SerializeField] private GameObject tilePrefab;
-    [SerializeField] private int GRID_SIZE_X = 5;
-    [SerializeField] private int GRID_SIZE_Y = 5;
-
     private int noFilledTiles;
-    private float progressPercent;
+    //private float progressPercent;
     
     private readonly List<Tile> tiles = new List<Tile>();
     
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void Init()
     {
-        transform.position = new Vector2(-GRID_SIZE_X/2, -GRID_SIZE_Y/2);
-
         GameObject[] tileObjects = GameObject.FindGameObjectsWithTag("Tile");
 
         foreach (GameObject tileObject in tileObjects)
         {
+            Tile newTile = tileObject.GetComponent<Tile>();
+            newTile.enabled = true;
             tiles.Add(tileObject.GetComponent<Tile>());
         }
     }
@@ -44,16 +38,16 @@ public class TileManager : MonoBehaviour
             }
         }
 
-        progressPercent = ((float) noFilledTiles / tiles.Count) * 100;
+        //progressPercent = ((float) noFilledTiles / tiles.Count) * 100;
         //print(progressPercent);
     }
 
     public Tile GetRandomTile()
     {
-        return tiles[UnityEngine.Random.Range(0, tiles.Count)];
+        return tiles[Random.Range(0, tiles.Count)];
     }
 
-    public Tile GetRandomTileInRadius(Vector3 position, float radius)
+    public static Tile GetRandomTileInRadius(Vector3 position, float radius)
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(position, radius);
         List<Tile> randomTiles = new List<Tile>();
@@ -72,7 +66,7 @@ public class TileManager : MonoBehaviour
         //     tile.GetComponent<SpriteRenderer>().color = Color.red;
         // }
         //
-        return randomTiles[UnityEngine.Random.Range(0, randomTiles.Count)];
+        return randomTiles[Random.Range(0, randomTiles.Count)];
     }
 
     public int GetNumberOfTilesCaptured()

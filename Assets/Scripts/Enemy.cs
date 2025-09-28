@@ -31,7 +31,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private int ENEMY_KILL_BONUS_SCORE = 100;
     [SerializeField] private TMP_Text statusText;
 
-    private const float ENEMY_PLAYER_DAMAGE_TICK = 2.0f;
+    private const float ENEMY_PLAYER_DAMAGE_TICK = 10.0f;
 
     private const float ENEMY_MAX_HEALTH = 100.0f;
     private float currentHealth = ENEMY_MAX_HEALTH;
@@ -40,11 +40,6 @@ public class Enemy : MonoBehaviour
     private PlayerController.EMoveDirection myMoveDirection = PlayerController.EMoveDirection.Down;
 
     private EEnemyPersonality personality = EEnemyPersonality.Grunt;
-    
-    private EnemyManager enemyManager;
-    private GameManager gameManager;
-    private PlayerController playerController;
-    private TileManager tileManager;
     
     private Animator animator;
     private Rigidbody2D rb;
@@ -72,12 +67,6 @@ public class Enemy : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
-        // This is in inefficient TODO: REFACTOR!
-        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
-        tileManager = GameObject.Find("TileManager").GetComponent<TileManager>();
-        enemyManager = GameObject.Find("EnemyManager").GetComponent<EnemyManager>();
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
@@ -94,6 +83,8 @@ public class Enemy : MonoBehaviour
         {
             return;
         }
+        
+        spriteRenderer.sortingOrder = (-(int)transform.position.y);
         
         if (rb.linearVelocity.x > 0)
         {
@@ -171,7 +162,9 @@ public class Enemy : MonoBehaviour
                 break;
         }
         
-        statusText.text = currentHealth.ToString("#0") + "\n" + personality.ToString() + " | " + currentState.ToString() + " : " + (Time.time - stateStartTime).ToString("#0.00");
+        // FOR DEBUGGING ONLY TODO: REMOVE
+        //statusText.text = "Layer = " + spriteRenderer.sortingOrder + "\n" + currentHealth.ToString("#0") + "\n" + personality.ToString() + " | " + currentState.ToString() + " : " + (Time.time - stateStartTime).ToString("#0.00");
+        statusText.text = currentHealth.ToString("#0");
     }
 
     private void initState()
@@ -187,14 +180,14 @@ public class Enemy : MonoBehaviour
                 switch (personality)
                 {
                     case EEnemyPersonality.Grunt:
-                        destination = tileManager.GetRandomTile().transform.position;
+                        destination = GameManager.Instance.tileManager.GetRandomTile().transform.position;
                         directionTo = (destination - transform.position).normalized;
                         break;
                     case EEnemyPersonality.Bold:
                     case EEnemyPersonality.Aggressive:
                     //case EEnemyPersonality.Scared:
-                        float radius = personality == EEnemyPersonality.Aggressive ? 2.0f : playerController.GetComponent<CircleCollider2D>().radius + 1.0f;
-                        destination = tileManager.GetRandomTileInRadius(playerController.transform.position, radius).transform.position;
+                        float radius = personality == EEnemyPersonality.Aggressive ? 2.0f : GameManager.Instance.playerController.GetComponent<CircleCollider2D>().radius + 1.0f;
+                        destination = TileManager.GetRandomTileInRadius(GameManager.Instance.playerController.transform.position, radius).transform.position;
                         directionTo = (destination - transform.position).normalized;
                         break;
                     
@@ -248,7 +241,7 @@ public class Enemy : MonoBehaviour
     {
         active = true;
         personality = (EEnemyPersonality)Random.Range(0, Enum.GetValues(typeof(EEnemyPersonality)).Length);
-        print("I am " + personality);
+        //print("I am " + personality);
         changeState(EEnemyState.Moving);
         myMoveDirection = PlayerController.EMoveDirection.Down;
         currentHealth = ENEMY_MAX_HEALTH;
@@ -283,11 +276,11 @@ public class Enemy : MonoBehaviour
         if (other.CompareTag("Projectile"))
         {
             // Uh oh, I've been hit!
-            currentHealth -= playerController.GetCurrentProjectileDamage();
+            currentHealth -= GameManager.Instance.playerController.GetCurrentProjectileDamage();
             if (currentHealth <= 0)
             {
-                gameManager.IncreaseScore(ENEMY_KILL_BONUS_SCORE);
-                enemyManager.OnEnemyDestroyed();
+                GameManager.Instance.IncreaseScore(ENEMY_KILL_BONUS_SCORE);
+                GameManager.Instance.enemyManager.OnEnemyDestroyed();
                 Deactivate();
             }
         }

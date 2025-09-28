@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6512033417172442091}
   - component: {fileID: 686648953818663428}
   - component: {fileID: 4641392079561225068}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -51,7 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ENEMY_RADIUS: 3
   ENEMY_VISION_ANGLE: 80
-  ENEMY_MOVEMENT_SPEED: 2
+  ENEMY_BASE_MOVEMENT_SPEED: 2
   ENEMY_MIN_MOVE_TIME: 1
   ENEMY_MAX_MOVE_TIME: 5
   ENEMY_SPRAY_MIN_DURATION: 2
@@ -219,7 +219,7 @@ GameObject:
   - component: {fileID: 3315931156670508024}
   - component: {fileID: 7316961713461844348}
   - component: {fileID: 6694245053934873895}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: StatusText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -354,7 +354,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5840835134442386863}
   - component: {fileID: 7194302898460357450}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}

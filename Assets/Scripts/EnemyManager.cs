@@ -18,16 +18,16 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private int ENEMY_MAX_SPAWN_AMOUNT = 3;
 
     private float lastEnemySpawnTime;
-    private List<Enemy> enemyPool = new List<Enemy>();
+    private readonly List<Enemy> enemyPool = new List<Enemy>();
     private int enemiesAlive;
 
     private float lastVanSpawnTime;
-    private List<Van> vanPool = new List<Van>();
+    private readonly List<Van> vanPool = new List<Van>();
     private int vansAlive;
     
-    private Dictionary<VanSpawnPoint, bool> vanSpawnPointStatuses = new Dictionary<VanSpawnPoint, bool>();
-    
-    private void Awake()
+    private readonly Dictionary<VanSpawnPoint, bool> vanSpawnPointStatuses = new Dictionary<VanSpawnPoint, bool>();
+
+    public void Init()
     {
         for (int i = 0; i < ENEMY_POOL_SIZE; i++)
         {
@@ -35,7 +35,7 @@ public class EnemyManager : MonoBehaviour
             newEnemy.Deactivate();
             enemyPool.Add(newEnemy);
         }
-        
+
         lastEnemySpawnTime = Time.time;
 
         for (int i = 0; i < VAN_POOL_SIZE; i++)
@@ -44,7 +44,7 @@ public class EnemyManager : MonoBehaviour
             newVan.Deactivate();
             vanPool.Add(newVan);
         }
-        
+
         lastVanSpawnTime = Time.time;
 
         foreach (var spawnPoint in vanSpawnPoints)
@@ -83,7 +83,7 @@ public class EnemyManager : MonoBehaviour
             return;
         }
         
-        print("Successfully spawned a van");
+        //print("Successfully spawned a van");
         SpawnVan(spawnPoint);
     }
 
@@ -181,6 +181,7 @@ public class EnemyManager : MonoBehaviour
     private void SpawnVan(VanSpawnPoint spawnPointObject)
     {
         Van spawnedVan = GetFirstAvailableVanFromPool();
+        //print("Spawned: " + spawnedVan.enabled);
         vanSpawnPointStatuses[spawnPointObject] = true;
         spawnedVan.SetSpawnPointObject(spawnPointObject);
         spawnedVan.transform.position = new Vector3(
@@ -199,4 +200,5 @@ public class EnemyManager : MonoBehaviour
     {
         enemiesAlive--;
     }
+
 }

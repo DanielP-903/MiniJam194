@@ -50,6 +50,9 @@ TagManager:
   - name: Decoration
     uniqueID: 1381333631
     locked: 0
+  - name: Collision
+    uniqueID: 1320529605
+    locked: 0
   - name: Player
     uniqueID: 137749325
     locked: 0

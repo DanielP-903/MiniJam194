@@ -1,21 +1,23 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Van : Tile
 {
-    public enum EVanState
+    private enum EVanState
     {
         Entering,
         Idle,
         Dead
     }
     
+    [SerializeField] private TMP_Text statusText;
     [SerializeField] private List<GameObject> spawnLocations;
     [SerializeField] private float VAN_ENTER_SPEED = 3.0f;
 
-    private EnemyManager enemyManager;
+    private BoxCollider2D boxCollider;
     private EVanState vanState = EVanState.Entering;
     private Vector3 vanDestination;
     
@@ -25,8 +27,8 @@ public class Van : Tile
     private void Awake()
     {
         Init();
-        enemyManager = GameObject.Find("EnemyManager").GetComponent<EnemyManager>();
         active = false;
+        boxCollider = GetComponent<BoxCollider2D>();
     }
     
     public Vector3 GetRandomSpawnLocation()
@@ -36,10 +38,15 @@ public class Van : Tile
 
     private void Update()
     {
+        // FOR DEBUGGING TODO: REMOVE
+        //statusText.text = "Layer = " + spriteRenderer.sortingOrder + "\n" + (GetNumStates() - GetState()) + "\n";
+
         if (!active)
         {
             return;
         }
+        
+        spriteRenderer.sortingOrder = (-(int)transform.position.y - (int)(boxCollider.size.y));
 
         switch (vanState)
         {
@@ -57,6 +64,8 @@ public class Van : Tile
         }
     }
 
+
+
     public bool CanSpawnEnemies()
     {
         return vanState == EVanState.Idle && !IsAtMaxState();
@@ -68,12 +77,14 @@ public class Van : Tile
         vanState = EVanState.Entering;
         UpdateState(initialState);
         gameObject.SetActive(true);
+        enabled = true;
     }
     
     public void Deactivate()
     {
         active = false;
         gameObject.SetActive(false);
+        enabled = false;
     }
 
     public bool GetActive()
@@ -100,6 +111,6 @@ public class Van : Tile
         base.OnReachedMaxState();
         vanState = EVanState.Dead;
         Deactivate();
-        enemyManager.OnVanDestroyed(this);
+        GameManager.Instance.enemyManager.OnVanDestroyed(this);
     }
 }
