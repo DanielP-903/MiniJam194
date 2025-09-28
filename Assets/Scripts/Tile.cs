@@ -19,6 +19,8 @@ public class Tile : MonoBehaviour
     private int currentState;
     private float changeStateTime;
 
+    private int defaultOrder = 0;
+    
     private Particles currentParticles;
     protected bool active = true;
 
@@ -62,7 +64,8 @@ public class Tile : MonoBehaviour
     
     protected void Init()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>(); 
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        defaultOrder = spriteRenderer.sortingOrder;
         TryGetComponent<Animator>(out animator);
         UpdateState(initialState);
     }
@@ -230,12 +233,15 @@ public class Tile : MonoBehaviour
         currentState = newState;
         spriteRenderer.sprite = states[currentState];
         // TODO: add boolean to ignore this
-        spriteRenderer.sortingOrder = currentState;
-        transform.GetChild(0).TryGetComponent(out SpriteRenderer childSpriteRenderer);
-        if (childSpriteRenderer)
+        spriteRenderer.sortingOrder = defaultOrder + currentState;
+        if (transform.childCount > 0)
         {
-            childSpriteRenderer.color = new Color(0.0f, 0.0f, 0.0f, (float)(currentState + 1) / states.Count);
-            childSpriteRenderer.sortingOrder = currentState - 1;
+            transform.GetChild(0).TryGetComponent(out SpriteRenderer childSpriteRenderer);
+            if (childSpriteRenderer)
+            {
+                childSpriteRenderer.color = new Color(0.0f, 0.0f, 0.0f, (float) (currentState + 1) / states.Count);
+                childSpriteRenderer.sortingOrder = currentState - 1;
+            }
         }
 
         if (previousState != currentState && currentState == states.Count - 1)

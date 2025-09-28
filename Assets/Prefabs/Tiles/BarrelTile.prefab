@@ -49,8 +49,11 @@ MonoBehaviour:
   states:
   - {fileID: -8336932373534742274, guid: 3e7024f8fee83654bab5d7cd710de9ba, type: 3}
   - {fileID: 7012408834205233906, guid: 3e7024f8fee83654bab5d7cd710de9ba, type: 3}
+  statesHaveAnimation: 
   initialState: 0
   canBeHealed: 1
+  emitsParticles: 1
+  BONUS_SCORE_REWARD: 0
   timeBetweenNegativeStates: 2
   timeBetweenPositiveStates: 1
 --- !u!212 &2168635737484692564

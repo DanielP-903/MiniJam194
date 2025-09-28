@@ -50,8 +50,11 @@ MonoBehaviour:
   states:
   - {fileID: 4984798588284173494, guid: 0c038cecb18c4134a829630ca34eba79, type: 3}
   - {fileID: 6536039012266425749, guid: 1f6fd6fe724bdc34eaf4439d2759d589, type: 3}
+  statesHaveAnimation: 
   initialState: 0
   canBeHealed: 1
+  emitsParticles: 1
+  BONUS_SCORE_REWARD: 0
   timeBetweenNegativeStates: 2
   timeBetweenPositiveStates: 1
 --- !u!212 &2168635737484692564
@@ -95,9 +98,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1381333631
-  m_SortingLayer: 2
-  m_SortingOrder: 1
+  m_SortingLayerID: 1320529605
+  m_SortingLayer: 3
+  m_SortingOrder: 5
   m_Sprite: {fileID: 4984798588284173494, guid: 0c038cecb18c4134a829630ca34eba79, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

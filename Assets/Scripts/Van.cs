@@ -55,7 +55,7 @@ public class Van : Tile
             return;
         }
         
-        print("I AM PLAYING: " + audioSource.clip.name);
+        //print("I AM PLAYING: " + audioSource.clip.name);
         
         // FOR DEBUGGING TODO: REMOVE
         //statusText.text = "Layer = " + spriteRenderer.sortingOrder + "\n" + (GetNumStates() - GetState()) + "\n";
