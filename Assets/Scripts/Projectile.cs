@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    [SerializeField] private ParticleSystem ps;
     private CircleCollider2D circleCollider;
     
     private bool isFiring;
@@ -12,15 +13,23 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float BASE_SPEED = 10;
     private float speed = 10;
     private float elapsedTime;
+
+    private float initialScale = 1.0f;
     
+    public bool active { get; private set; }
+
     private void Awake()
     {
         circleCollider = GetComponent<CircleCollider2D>();
-        circleCollider.enabled = false;
     }
 
     private void Update()
     {
+        if (!active)
+        {
+            return;
+        }
+        
         if (!isFiring)
         {
             return;
@@ -30,7 +39,7 @@ public class Projectile : MonoBehaviour
         float alpha = elapsedTime * speed;
         alpha = Mathf.Clamp01(alpha);
         transform.position = Vector3.Lerp(savedStartPos, savedEndPos, alpha);
-        float sin = 1 + Mathf.Sin(Mathf.Lerp(0, Mathf.PI, alpha));
+        float sin = initialScale + Mathf.Sin(Mathf.Lerp(0, Mathf.PI, alpha));
         transform.localScale = new Vector3(sin, sin, 1);
         //print(sin);
 
@@ -54,6 +63,7 @@ public class Projectile : MonoBehaviour
         savedEndPos = endPos;
         savedPower = Mathf.Clamp(power, 1.5f,5.0f);
         print("Power = " + power);
+        initialScale = savedPower/ 5.0f;
         speed = BASE_SPEED / Vector3.Distance(savedStartPos, savedEndPos);
     }
 
@@ -66,11 +76,29 @@ public class Projectile : MonoBehaviour
         }
         
         //print("Impacted!");
-        Destroy(gameObject);
+        Deactivate();
     }
 
     public float GetPower()
     {
         return savedPower;
+    }
+
+    
+    public void Activate()
+    {
+        active = true;
+        gameObject.SetActive(true);
+        ps.Play();
+        circleCollider.enabled = false;
+        enabled = true;
+    }
+    
+    public void Deactivate()
+    {
+        active = false;
+        gameObject.SetActive(false);
+        ps.Stop();
+        enabled = false;
     }
 }

@@ -7,11 +7,12 @@ public class Enemy : MonoBehaviour
 {
     private static readonly int MovementVelocity = Animator.StringToHash("MovementVelocity");
     private static readonly int IsSpraying = Animator.StringToHash("IsSpraying");
-    
+
     private enum EEnemyState
     {
         Moving,
-        Spraying
+        Spraying,
+        Dead
     }
 
     private enum EEnemyPersonality
@@ -28,6 +29,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float ENEMY_MAX_MOVE_TIME = 5.0f;
     [SerializeField] private float ENEMY_SPRAY_MIN_DURATION = 2.0f;
     [SerializeField] private float ENEMY_SPRAY_MAX_DURATION = 3.0f;
+    [SerializeField] private AnimationClip ENEMY_DEATH_ANIM;
     [SerializeField] private int ENEMY_KILL_BONUS_SCORE = 100;
     [SerializeField] private TMP_Text statusText;
 
@@ -36,6 +38,7 @@ public class Enemy : MonoBehaviour
     private const float ENEMY_MAX_HEALTH = 100.0f;
     private float currentHealth = ENEMY_MAX_HEALTH;
     private float enemyMovementSpeed = 2.0f;
+    private float enemyDeathDuration;
     
     private PlayerController.EMoveDirection myMoveDirection = PlayerController.EMoveDirection.Down;
 
@@ -45,6 +48,7 @@ public class Enemy : MonoBehaviour
     private Rigidbody2D rb;
     private CircleCollider2D circleCollider;
     private SpriteRenderer spriteRenderer;
+    private BoxCollider2D boxCollider;
     
     private EEnemyState currentState = EEnemyState.Moving;
     
@@ -67,6 +71,7 @@ public class Enemy : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
+        boxCollider = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
@@ -75,6 +80,7 @@ public class Enemy : MonoBehaviour
         circleCollider.isTrigger = true;
 
         currentHealth = ENEMY_MAX_HEALTH;
+        enemyDeathDuration = ENEMY_DEATH_ANIM.length;
     }
 
     private void Update()
@@ -149,7 +155,7 @@ public class Enemy : MonoBehaviour
                 else
                 {
                     rb.linearVelocity = directionTo * enemyMovementSpeed;
-                    Debug.DrawLine(transform.position, destination, Color.red);
+                    //Debug.DrawLine(transform.position, destination, Color.red);
                 }
                 break;
             case EEnemyState.Spraying:
@@ -160,11 +166,22 @@ public class Enemy : MonoBehaviour
                     changeState(EEnemyState.Moving);
                 }
                 break;
+            case EEnemyState.Dead:
+                rb.linearVelocity = Vector3.zero;
+                if (Time.time - stateStartTime > enemyDeathDuration)
+                {
+                    // Ok we've suffered enough, kill me
+                    Deactivate();
+                }
+                break;
+        }
+
+        if (currentState != EEnemyState.Dead)
+        {
+            statusText.text = currentHealth.ToString("#0");
         }
         
-        // FOR DEBUGGING ONLY TODO: REMOVE
         //statusText.text = "Layer = " + spriteRenderer.sortingOrder + "\n" + currentHealth.ToString("#0") + "\n" + personality.ToString() + " | " + currentState.ToString() + " : " + (Time.time - stateStartTime).ToString("#0.00");
-        statusText.text = currentHealth.ToString("#0");
     }
 
     private void initState()
@@ -221,9 +238,20 @@ public class Enemy : MonoBehaviour
                 animator.SetBool(IsSpraying, true);
 
                 break;
+            
+            case EEnemyState.Dead:
+                circleCollider.enabled = false;
+                statusText.text = "";
+                
+                // play death animation
+                animator.SetFloat(MovementVelocity, 0.0f);
+                animator.SetBool(IsSpraying, false);
+                animator.Play("EnemyDeath");
+ 
+                break;
         }
         
-        statusText.text = currentState.ToString() + " : 0.0";
+        //statusText.text = currentState.ToString() + " : 0.0";
     }
     
     private void changeState(EEnemyState newState)
@@ -245,7 +273,8 @@ public class Enemy : MonoBehaviour
         changeState(EEnemyState.Moving);
         myMoveDirection = PlayerController.EMoveDirection.Down;
         currentHealth = ENEMY_MAX_HEALTH;
-        
+        boxCollider.enabled = true;
+
         gameObject.SetActive(true);
     }
     
@@ -273,15 +302,28 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
+        if (currentState == EEnemyState.Dead)
+        {
+            return;
+        }
+        
         if (other.CompareTag("Projectile"))
         {
             // Uh oh, I've been hit!
             currentHealth -= GameManager.Instance.playerController.GetCurrentProjectileDamage();
             if (currentHealth <= 0)
             {
+                // X_X
                 GameManager.Instance.IncreaseScore(ENEMY_KILL_BONUS_SCORE);
                 GameManager.Instance.enemyManager.OnEnemyDestroyed();
-                Deactivate();
+                changeState(EEnemyState.Dead);
+                boxCollider.enabled = false;
+                currentHealth = 0;
+                rb.linearVelocity = Vector3.zero;
+            }
+            else
+            {
+                animator.Play("EnemyHitByProjectile");
             }
         }
     }

@@ -3,17 +3,17 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
-public class UIEventHandler : MonoBehaviour
+public class MainMenuEventHandler : MonoBehaviour
 {
-    [SerializeField]
-    private UIDocument m_UIDocument;
+    private UIDocument document;
     private Button playButton;
     private Button quitButton;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        var rootElement = m_UIDocument.rootVisualElement;
+        document = GetComponent<UIDocument>();
+        var rootElement = document.rootVisualElement;
         playButton = rootElement.Q<Button>("PlayButton");
         playButton.clickable.clicked += OnPlayButtonClicked;
         EventSystem.current.SetSelectedGameObject(null);

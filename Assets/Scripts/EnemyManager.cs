@@ -93,6 +93,8 @@ public class EnemyManager : MonoBehaviour
         {
             return;
         }
+        
+        lastEnemySpawnTime = Time.time;
 
         Van randomVan = GetRandomActiveVan();
         if (!randomVan)
@@ -100,7 +102,6 @@ public class EnemyManager : MonoBehaviour
             return;
         }
         
-        lastEnemySpawnTime = Time.time;
         SpawnEnemy(randomVan.GetRandomSpawnLocation());
     }
 
@@ -194,6 +195,7 @@ public class EnemyManager : MonoBehaviour
     public void OnVanDestroyed(Van van)
     {
         vanSpawnPointStatuses[van.GetSpawnPointObject()] = false;
+        vansAlive--;
     }
     
     public void OnEnemyDestroyed()

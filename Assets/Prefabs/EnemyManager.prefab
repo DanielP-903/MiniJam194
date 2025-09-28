@@ -49,7 +49,7 @@ MonoBehaviour:
   - {fileID: 0}
   vanPrefab: {fileID: 5454534480319457081, guid: df34a35d3e20a7040850010954e7293f, type: 3}
   VAN_POOL_SIZE: 4
-  VAN_SPAWN_DELAY: 5
+  VAN_SPAWN_DELAY: 1
   VAN_MAX_SPAWN_AMOUNT: 4
   enemyPrefab: {fileID: 7504204008355517423, guid: e0733404f10cb3f44b59560c13b9cc01, type: 3}
   ENEMY_POOL_SIZE: 10

@@ -16,10 +16,14 @@ public class Van : Tile
     [SerializeField] private TMP_Text statusText;
     [SerializeField] private List<GameObject> spawnLocations;
     [SerializeField] private float VAN_ENTER_SPEED = 3.0f;
+    [SerializeField] private AnimationClip VAN_DESTROY_ANIM;
 
     private BoxCollider2D boxCollider;
+    
     private EVanState vanState = EVanState.Entering;
     private Vector3 vanDestination;
+    private float vanDeathDuration;
+    private float deathStartTime;
     
     private VanSpawnPoint spawnPointObject;
     
@@ -29,6 +33,9 @@ public class Van : Tile
         Init();
         active = false;
         boxCollider = GetComponent<BoxCollider2D>();
+        animator = GetComponent<Animator>();
+        
+        vanDeathDuration = VAN_DESTROY_ANIM.length;
     }
     
     public Vector3 GetRandomSpawnLocation()
@@ -59,12 +66,17 @@ public class Van : Tile
                 break;
             case EVanState.Idle:
                 break;
+            case EVanState.Dead:
+                if (Time.time - deathStartTime > vanDeathDuration)
+                {
+                    // Ok we've suffered enough, kill me
+                    Deactivate();
+                }
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
-
-
 
     public bool CanSpawnEnemies()
     {
@@ -110,7 +122,10 @@ public class Van : Tile
     {
         base.OnReachedMaxState();
         vanState = EVanState.Dead;
-        Deactivate();
+        deathStartTime =  Time.time;
+        animator.enabled = true;
+        animator.Play("VanDeath");
         GameManager.Instance.enemyManager.OnVanDestroyed(this);
+        GameManager.Instance.IncreaseScore(BONUS_SCORE_REWARD);
     }
 }

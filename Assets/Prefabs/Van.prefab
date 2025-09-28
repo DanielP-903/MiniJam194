@@ -340,8 +340,11 @@ MonoBehaviour:
   - {fileID: 4998990965674732422, guid: 1f6fd6fe724bdc34eaf4439d2759d589, type: 3}
   - {fileID: 642944563015265592, guid: 1f6fd6fe724bdc34eaf4439d2759d589, type: 3}
   - {fileID: 6536039012266425749, guid: 1f6fd6fe724bdc34eaf4439d2759d589, type: 3}
+  statesHaveAnimation: 010001
   initialState: 0
   canBeHealed: 0
+  emitsParticles: 0
+  BONUS_SCORE_REWARD: 500
   timeBetweenNegativeStates: 10
   timeBetweenPositiveStates: 1
   statusText: {fileID: 2453372391295694810}
@@ -351,6 +354,7 @@ MonoBehaviour:
   - {fileID: 2500469852619325659}
   - {fileID: 8898295693438116835}
   VAN_ENTER_SPEED: 3
+  VAN_DESTROY_ANIM: {fileID: 7400000, guid: fb1a29ad4e625294a924e1352decba19, type: 2}
 --- !u!61 &5510879973423212918
 BoxCollider2D:
   m_ObjectHideFlags: 0

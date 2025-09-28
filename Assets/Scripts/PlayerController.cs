@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,27 +22,38 @@ public class PlayerController : MonoBehaviour
         {EMoveDirection.Right, Vector2.right}   
     };
 
+    private static readonly int MovementSpeed = Animator.StringToHash("MovementSpeed");
+    private static readonly int Fire1 = Animator.StringToHash("Fire");
+    private static readonly int Charging = Animator.StringToHash("Charging");
+
     [SerializeField] private float SPEED = 5;
     [SerializeField] private float TOXIC_RADIUS = 5;
     [SerializeField] private float PROJECTILE_CHARGE_TIME = 2;
     [SerializeField] private float POWER_SCALE = 10;
     [SerializeField] private float PROJECTILE_START_DAMAGE = 2;
     [SerializeField] private float FIRE_RATE = 1;
-    [SerializeField] private Projectile projectile;
+    [SerializeField] private float LOBBER_ARROW_OFFSET = 5.0f;
+    
+    [SerializeField] private int PROJECTILE_POOL_SIZE = 5;
+    
+    [SerializeField] private Projectile projectilePrefab;
     [SerializeField] private GameObject lobberArrow;
+    [SerializeField] private TMP_Text statusText;
 
     private const float MAX_HEALTH = 100.0f;
     private float currentHealth = MAX_HEALTH;
     private float projectileStartTime;
+    
+    private readonly List<Projectile> projectilePool = new List<Projectile>();
     
     private bool moveUp;
     private bool moveDown;
     private bool moveLeft;
     private bool moveRight;
     private Rigidbody2D rb;
+    private Animator animator;
     private CircleCollider2D circleCollider;
     private SpriteRenderer spriteRenderer;
-    private float savedPowerPercent;
 
     private bool canFire = true;
     private bool isCharging = false;
@@ -55,8 +67,17 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         circleCollider = gameObject.AddComponent<CircleCollider2D>();
+        animator = GetComponent<Animator>();
         circleCollider.radius = TOXIC_RADIUS;
         circleCollider.isTrigger = true;
+        lobberArrow.SetActive(false);
+
+        for (int i = 0; i < PROJECTILE_POOL_SIZE; i++)
+        {
+            Projectile newProjectile = Instantiate(projectilePrefab);
+            newProjectile.Deactivate();
+            projectilePool.Add(newProjectile);
+        }
     }
 
     // Update is called once per frame
@@ -66,6 +87,17 @@ public class PlayerController : MonoBehaviour
 
         spriteRenderer.sortingOrder = (-(int)transform.position.y);
 
+        if (rb.linearVelocity.x > 0 || facingDirection == EMoveDirection.Right)
+        {
+            spriteRenderer.flipX = true;
+        }
+        else if (rb.linearVelocity.x < 0 || facingDirection == EMoveDirection.Left)
+        {
+            spriteRenderer.flipX = false;
+        }
+        
+        animator.SetFloat(MovementSpeed, rb.linearVelocity.magnitude);
+        
         if (isCharging)
         {
             if (Time.time - projectileStartTime > PROJECTILE_CHARGE_TIME)
@@ -108,9 +140,11 @@ public class PlayerController : MonoBehaviour
         
         if (isCharging)
         {
+            lobberArrow.transform.localPosition =  
+                MoveDirectionLookup[facingDirection] * (LOBBER_ARROW_OFFSET + ((Time.time - projectileStartTime) / PROJECTILE_CHARGE_TIME));
             return;
         }
-
+        
         rb.linearVelocity = velocity.normalized * SPEED;
     }
 
@@ -154,7 +188,9 @@ public class PlayerController : MonoBehaviour
     {
         if (context.performed)
         {
+            animator.Play("PlayerChargeSide");
             isCharging = true;
+            lobberArrow.SetActive(true);
             rb.linearVelocity = Vector2.zero;
             projectileStartTime = Time.time;
         }
@@ -167,6 +203,7 @@ public class PlayerController : MonoBehaviour
     private void LobProjectile()
     {       
         isCharging = false;
+        lobberArrow.SetActive(false);
         if (!canFire)
         {
             return;
@@ -176,30 +213,52 @@ public class PlayerController : MonoBehaviour
             
         float power = (Time.time - projectileStartTime) / PROJECTILE_CHARGE_TIME;
         power = Mathf.Clamp(power, 0.2f, 1.0f);
-        savedPowerPercent = power * 100;
         power *= POWER_SCALE;
             
         Vector3 position = transform.position + MoveDirectionLookup[facingDirection];
-        Projectile newProjectile = Instantiate(projectile, position, Quaternion.identity);
+        Projectile newProjectile = GetFirstAvailableProjectileFromPool();
+        newProjectile.transform.position = position;
         newProjectile.Fire(position + (MoveDirectionLookup[facingDirection] * power), power / 2.0f);
-            
+        animator.Play("PlayerFireSide");
+    
         //print("Firing with power: " + power);
     }
     
-    private void OnGUI()
+    private Projectile GetFirstAvailableProjectileFromPool()
     {
-        GUIStyle style = new GUIStyle();
-        style.fontSize = 50;
-
-        float progress = ((Time.time - projectileStartTime) / PROJECTILE_CHARGE_TIME) * 100;
-        progress = Mathf.Clamp(progress, 0, 100);
-
-        if (!isCharging)
+        foreach (var projectile in projectilePool)
         {
-            progress = 0;
+            if (projectile.active) 
+                continue;
+            
+            // Found an inactive enemy
+            projectile.Activate();
+            return projectile;
         }
-        GUI.Label(new Rect(10,70,200,40), "Charged " + progress.ToString("#0.0") + "%", style);
+        
+        // None active... make new one
+        
+        Projectile newProjectile = Instantiate(projectilePrefab, transform);
+        newProjectile.Activate();
+        projectilePool.Add(newProjectile);
+        return newProjectile;
     }
+
+    
+    // private void OnGUI()
+    // {
+    //     GUIStyle style = new GUIStyle();
+    //     style.fontSize = 50;
+    //
+    //     float progress = ((Time.time - projectileStartTime) / PROJECTILE_CHARGE_TIME) * 100;
+    //     progress = Mathf.Clamp(progress, 0, 100);
+    //
+    //     if (!isCharging)
+    //     {
+    //         progress = 0;
+    //     }
+    //     GUI.Label(new Rect(10,70,200,40), "Charged " + progress.ToString("#0.0") + "%", style);
+    // }
 
     public float GetCurrentHealth()
     {
@@ -223,7 +282,10 @@ public class PlayerController : MonoBehaviour
         {
             // We are dead.
             GameManager.Instance.OnPlayerDeath();
+            currentHealth = 0;
         }
+        
+        statusText.text = currentHealth.ToString("#0");
     }
 
     public float GetCurrentProjectileDamage()

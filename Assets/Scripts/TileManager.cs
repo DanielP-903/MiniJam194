@@ -37,9 +37,8 @@ public class TileManager : MonoBehaviour
                 noFilledTiles++;
             }
         }
-
-        //progressPercent = ((float) noFilledTiles / tiles.Count) * 100;
-        //print(progressPercent);
+        
+        GameManager.Instance.playerHUD.UpdateFillPercentage(((float) noFilledTiles / tiles.Count) * 100);
     }
 
     public Tile GetRandomTile()

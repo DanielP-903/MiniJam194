@@ -56,6 +56,7 @@ MonoBehaviour:
   ENEMY_MAX_MOVE_TIME: 5
   ENEMY_SPRAY_MIN_DURATION: 2
   ENEMY_SPRAY_MAX_DURATION: 3
+  ENEMY_DEATH_ANIM: {fileID: 7400000, guid: b9a2726d73f502840a48252270c67bec, type: 2}
   ENEMY_KILL_BONUS_SCORE: 100
   statusText: {fileID: 6694245053934873895}
 --- !u!212 &4970055684709091891
@@ -100,7 +101,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 137749325
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: -2388611721508771250, guid: 62d87af4b14589047b39b4f53308cac0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
