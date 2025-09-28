@@ -1,10 +1,11 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/MainMenu.uss?fileID=7433441132597879392&amp;guid=11e094af66288214a88410113a3418d2&amp;type=3#MainMenu" />
-    <ui:VisualElement name="Panel" class="panel" style="flex-grow: 1; align-content: flex-start; justify-content: center;">
+    <ui:VisualElement name="Panel" class="panel" style="flex-grow: 1; align-content: flex-start; justify-content: center; background-image: url(&quot;project://database/Assets/Art/Ryan%20Test/BG.png?fileID=2800000&amp;guid=f470a43baf72d464c967a8bec5c4477e&amp;type=3#BG&quot;); background-repeat: no-repeat no-repeat; -unity-background-image-tint-color: rgba(103, 103, 103, 0.45); background-size: 500% 100%; color: rgb(27, 27, 27); background-color: rgba(0, 0, 0, 0.56);">
         <ui:VisualElement name="Container" class="menu" style="flex-grow: 1; flex-direction: column; align-items: stretch; align-content: auto; width: 40%; height: 0%; max-height: 70%; align-self: auto; justify-content: flex-start;">
-            <ui:VisualElement name="Logo" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Art/Dan&apos;s%20Test%20Stuff/weeguy.png?fileID=8276948043193051512&amp;guid=dc2252ac16d889a4882f69b97696bf77&amp;type=3#weeguy_0&quot;); -unity-background-scale-mode: scale-to-fit; height: 200px;" />
+            <ui:VisualElement name="Logo" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Art/Sludgebound.png?fileID=4095472517853773431&amp;guid=f680210a8d449164996faf8ce1e9df7a&amp;type=3#Sludgebound_0&quot;); -unity-background-scale-mode: scale-to-fit; height: 200px; margin-bottom: 100px; scale: 1.5 1.5;" />
             <ui:Button text="Play" name="PlayButton" />
             <ui:Button text="Quit" name="QuitButton" />
         </ui:VisualElement>
+        <ui:Label text="By DanP_Games and RGeddes" style="align-items: flex-start; align-self: flex-start; left: 50px; font-size: 40px; margin-top: -50px; align-content: flex-end; -unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Fonts/PixelifySans-RegularRG.ttf?fileID=12800000&amp;guid=1362791ca63d461428d1e450886d63c0&amp;type=3#PixelifySans-RegularRG&quot;); color: rgb(255, 255, 255); -unity-font-style: italic; text-shadow: 3px 3px 0 rgb(0, 0, 0); justify-content: flex-start; transform-origin: center; translate: 0 100px;" />
     </ui:VisualElement>
 </ui:UXML>

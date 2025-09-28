@@ -8,7 +8,7 @@ public class EndLevelEventHandler : MonoBehaviour
     private UIDocument document;
     private Button continueButton;
     private Label scoreLabel;
-    private Label filledPercentLabel;
+    private Label titleLabel;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -27,13 +27,10 @@ public class EndLevelEventHandler : MonoBehaviour
         continueButton.Focus();
         
         scoreLabel = rootElement.Q<Label>("ScoreLabel");
-        filledPercentLabel = rootElement.Q<Label>("FillLabel");
+        titleLabel = rootElement.Q<Label>("TitleLabel");
 
         scoreLabel.text = "Score: " + GameManager.Instance.score.ToString("00000000");
-        filledPercentLabel.text = "";
-        // filledPercentLabel.text = "Filled: " +
-        //     ((float)GameManager.Instance.tileManager.GetNumberOfTilesCaptured() /
-        //      GameManager.Instance.tileManager.GetNumberOfTiles()).ToString("0.0") + "%";
+        titleLabel.text = GameManager.Instance.hasWon ? "You win!" : "You lose!";
     }
     
     private void OnContinueButtonClicked()

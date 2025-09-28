@@ -26,7 +26,7 @@ public class MainMenuEventHandler : MonoBehaviour
     
     private void OnPlayButtonClicked()
     {
-        SceneManager.LoadScene("Main", LoadSceneMode.Single);
+        SceneManager.LoadScene("Level 1", LoadSceneMode.Single);
     }
     private void OnQuitButtonClicked()
     {

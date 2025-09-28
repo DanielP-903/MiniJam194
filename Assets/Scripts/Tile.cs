@@ -104,17 +104,8 @@ public class Tile : MonoBehaviour
             {
                 return;
             }
-            
-            if (currentState == 0)
-            {
-                // At min
-                return;
-            }
-            
-            timeDelay = timeBetweenNegativeStates;
-            newState--;
 
-            if (newState == 0)
+            if (newState - 1 == 0)
             {
                 if (currentParticles && currentParticles.active)
                 {
@@ -141,7 +132,15 @@ public class Tile : MonoBehaviour
                             Random.Range(1, 2));
                 }
             }
-
+            
+            if (currentState == 0)
+            {
+                // At min
+                return;
+            }
+            
+            timeDelay = timeBetweenNegativeStates;
+            newState--;
         }
         else
         {
